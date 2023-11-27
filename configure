@@ -1,12 +1,23 @@
-#!/bin/bash
+#!/bin/sh
 
-echo "-------------------------Here---------------------"
-ABSOLUE_PATH=$(dirname $(realpath "$0"))
+##########################################################################
+# Copyright (c) 2023, King Abdullah University of Science and Technology
+# All rights reserved.
+# Template project is an R  Template package provided by the STSDS group at KAUST
+##########################################################################
+
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  ABSOLUE_PATH=$([[ $1 == /* ]] && echo "$1" || echo "$PWD/${1#./}")
+else
+  ABSOLUE_PATH=$(dirname $(realpath "$0"))
+fi
+
+
 BUILDING_EXAMPLES="OFF"
 BUILDING_TESTS="OFF"
 INSTALL_PATH="/usr/local"
 VERBOSE=OFF
-TEST_PATH="${ABSOLUE_PATH}/tests/test-files"
 CONFIG_PATH="${ABSOLUE_PATH}/config"
 echo ${ABSOLUE_PATH}
 
@@ -14,21 +25,26 @@ echo ${ABSOLUE_PATH}
 
 rm -rf bin/
 mkdir bin/
-cmake -DCMAKE_BUILD_TYPE=Debug \
+cmake -DCMAKE_BUILD_TYPE=RELEASE \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DMPR_BUILD_TESTS=$BUILDING_TESTS \
-  -DMPR_BUILD_EXAMPLES=$BUILDING_EXAMPLES \
+  -DTEMPLATE_BUILD_TESTS=$BUILDING_TESTS \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH \
-  -DCMAKE_TEST_PREFIX="$TEST_PATH" \
   -DCMAKE_CONFIG_PREFIX="$CONFIG_PATH" \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=$VERBOSE \
   -H"${ABSOLUE_PATH}" \
-  -B"${ABSOLUE_PATH}/bin"
-
+  -B"${ABSOLUE_PATH}/bin" \
+  -DRUNNING_CPP=OFF \
+  -DBUILD_SHARED_LIBS=OFF
 
 
 cd bin/
 make clean
-make all -j 4
+make all -j 8
 
-cp "${ABSOLUE_PATH}/bin/src/libmpr_rcpp.so" "${ABSOLUE_PATH}/src/MPR.so" || echo "Failed: libmpr_rcpp.so -> src"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  cp "${ABSOLUE_PATH}/bin/src/libtemplate.dylib" "${ABSOLUE_PATH}/src/TEMPLATE.so" || echo "Failed: libtemplate.dylib -> src"
+else
+  cp "${ABSOLUE_PATH}/bin/src/libtemplate.so" "${ABSOLUE_PATH}/src/TEMPLATE.so" || echo "Failed: libtemplate.so -> src"
+fi
+
+rm -rf "${ABSOLUE_PATH}/bin/"

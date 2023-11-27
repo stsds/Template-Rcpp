@@ -1,7 +1,13 @@
+/**
+ * Copyright (c) 2023, King Abdullah University of Science and Technology
+ * All rights reserved.
+ *
+ * Template project is an R  Template package provided by the STSDS group at KAUST
+ *
+ **/
 
-
-#ifndef MPR_DATATYPE_HPP
-#define MPR_DATATYPE_HPP
+#ifndef TEMPLATE_DATATYPE_HPP
+#define TEMPLATE_DATATYPE_HPP
 
 
 #include <vector>
@@ -10,7 +16,7 @@
 
 
 /** DataType Class creates an array of float that you can access throw
- * R as C++ object
+ * R as C++ object -> Example for Rcpp module exposure
  **/
 class DataType {
 
@@ -36,7 +42,7 @@ public:
      */
     ~DataType() {
         if (mpData != nullptr) {
-            delete mpData;
+            delete[] mpData;
         }
     }
 
@@ -92,4 +98,4 @@ private:
     size_t mVecSize;
 };
 
-#endif //MPR_DATATYPE_HPP
+#endif //TEMPLATE_DATATYPE_HPP

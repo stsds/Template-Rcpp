@@ -1,6 +1,6 @@
-\name{MPR-package}
-\alias{MPR-package}
-\alias{MPR}
+\name{TEMPLATE-package}
+\alias{TEMPLATE-package}
+\alias{TEMPLATE}
 \docType{package}
 \title{
   A short title line describing what the package does

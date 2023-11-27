@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/bin/sh
+
+##########################################################################
+# Copyright (c) 2023, King Abdullah University of Science and Technology
+# All rights reserved.
+# Template project is an R  Template package provided by the STSDS group at KAUST
+##########################################################################
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -6,7 +12,12 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 PROJECT_SOURCE_DIR=$(dirname "$0")
-ABSOLUE_PATH=$(dirname $(realpath "$0"))
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  ABSOLUE_PATH=$([[ $1 == /* ]] && echo "$1" || echo "$PWD/${1#./}")
+else
+  ABSOLUE_PATH=$(dirname $(realpath "$0"))
+fi
 
 while getopts ":f:c:tevhi:" opt; do
   case $opt in
@@ -95,11 +106,12 @@ rm -rf bin/
 mkdir bin/
 cmake -DCMAKE_BUILD_TYPE=Debug \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DMPR_BUILD_TESTS=$BUILDING_TESTS \
-  -DMPR_BUILD_EXAMPLES=$BUILDING_EXAMPLES \
+  -DTEMPLATE_BUILD_TESTS=$BUILDING_TESTS \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH \
-  -DCMAKE_TEST_PREFIX="$TEST_PATH" \
   -DCMAKE_CONFIG_PREFIX="$CONFIG_PATH" \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=$VERBOSE \
-  -H"${PROJECT_SOURCE_DIR}" \
-  -B"${PROJECT_SOURCE_DIR}/bin"
+  -H"${ABSOLUE_PATH}" \
+  -B"${ABSOLUE_PATH}/bin" \
+  -DRUNNING_CPP=ON \
+  -DBUILD_SHARED_LIBS=OFF
+

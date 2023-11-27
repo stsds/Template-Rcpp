@@ -1,10 +1,15 @@
+##########################################################################
+# Copyright (c) 2023, King Abdullah University of Science and Technology
+# All rights reserved.
+# Template project is an R  Template package provided by the STSDS group at KAUST
+##########################################################################
 
 # Set minimum cmake version
 cmake_minimum_required(VERSION 3.20)
 cmake_policy(SET CMP0048 NEW)
 
 # Project Name and Version
-project(MPR VERSION 1.0.0)
+project(Template VERSION 1.0.0)
 
 
 # Set C++ standard to C++11.
@@ -34,23 +39,30 @@ if (${R_FOUND})
 endif ()
 
 
+# Defining a macro to differentiate R from C++ calls.
+# Ex: printing can be std::cout if you're running C++ or Rcpp::Rcout if you're running the package in R.
+if (${RUNNING_CPP})
+    add_definitions(-DRUNNING_CPP)
+endif ()
+
+
 # Add Include DIRS
 include_directories(${CMAKE_SOURCE_DIR}/inst/include)
-include_directories(${CMAKE_SOURCE_DIR}/prerequisites)
 
 # Add src Directory to expose added libraries
 
 
 # Options
-option(MPR_BUILD_TESTS "Option to enable building tests" OFF)
+option(TEMPLATE_BUILD_TESTS "Option to enable building tests" OFF)
 
 add_subdirectory(src)
 
 message("Installation path : ${CMAKE_INSTALL_PREFIX}")
-message("Building MPR tests : ${MPR_BUILD_TESTS}")
+message("Building Template tests : ${TEMPLATE_BUILD_TESTS}")
 
 
-if (MPR_BUILD_TESTS)
+if (TEMPLATE_BUILD_TESTS)
+    include_directories(${CMAKE_SOURCE_DIR}/prerequisites)
     add_subdirectory(tests/cpp-tests)
     # Add the system test.
     include(CTest)
